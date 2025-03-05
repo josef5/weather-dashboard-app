@@ -8,8 +8,10 @@ interface WeatherState {
   error: string | null;
 }
 
+const storedCities = getStoredCities();
+
 const initialState: WeatherState = {
-  cities: [{ name: "London", id: "london", pinned: false }],
+  cities: storedCities,
   weatherData: {},
   loading: false,
   error: null,
@@ -23,6 +25,8 @@ const weatherSlice = createSlice({
       // Check if the city is already in the list
       if (!state.cities.find((city) => city.name === action.payload.name)) {
         state.cities.push(action.payload);
+
+        setStoredCities(state.cities);
       }
     },
     removeCity: (state, action: PayloadAction<string>) => {
@@ -30,15 +34,27 @@ const weatherSlice = createSlice({
         (city) => city.name !== action.payload,
       );
       delete state.weatherData[action.payload];
+
+      setStoredCities(state.cities);
     },
     togglePinned: (state, action: PayloadAction<string>) => {
       const city = state.cities.find((city) => city.name === action.payload);
       if (city) {
         city.pinned = !city.pinned;
+
+        setStoredCities(state.cities);
       }
     },
   },
 });
+
+function getStoredCities() {
+  return JSON.parse(localStorage.getItem("cities") ?? "[]") as City[];
+}
+
+function setStoredCities(data: City[]) {
+  localStorage.setItem("cities", JSON.stringify(data));
+}
 
 export const { addCity, removeCity, togglePinned } = weatherSlice.actions;
 export default weatherSlice.reducer;
