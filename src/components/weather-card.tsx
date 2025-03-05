@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useWeatherData } from "../hooks/useWeatherData";
 
 function WeatherCard({ city }: { city: string }) {
-  const [weatherData, setWeatherData] = useState<any>(null);
+  const { weatherData, loading, error } = useWeatherData(city);
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch(
-        `https://api.weatherapi.com/v1/forecast.json?key=${
-          import.meta.env.VITE_WEATHER_API_KEY
-        }&q=${city}&days=5&aqi=no&alerts=no`,
-      );
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-      setWeatherData(await response.json());
-
-      console.log("weatherData :", weatherData);
-    }
-
-    fetchData();
-  }, [city]);
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <div>
@@ -26,10 +18,10 @@ function WeatherCard({ city }: { city: string }) {
           <h2 className="text-2xl font-bold">{weatherData.location.name}</h2>
           <p>{weatherData.location.country}</p>
           <div className="flex items-center">
-          <img
-            src={`https:${weatherData.current.condition.icon}`}
-            alt={weatherData.current.condition.text}
-          />
+            <img
+              src={`https:${weatherData.current.condition.icon}`}
+              alt={weatherData.current.condition.text}
+            />
             <p className="text-5xl font-bold">
               {Math.round(weatherData.current.temp_c)}°C
             </p>
@@ -37,11 +29,11 @@ function WeatherCard({ city }: { city: string }) {
           </div>
 
           <div className="flex gap-3">
-          <div>
+            <div>
               <p className="text-xs">Humidity</p>
-            <p className="font-semibold">{weatherData.current.humidity}%</p>
-          </div>
-          <div>
+              <p className="font-semibold">{weatherData.current.humidity}%</p>
+            </div>
+            <div>
               <p className="text-xs">Wind Speed</p>
               <p className="font-semibold">
                 {weatherData.current.wind_kph} km/h
