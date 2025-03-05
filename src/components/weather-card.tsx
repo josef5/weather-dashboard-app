@@ -22,27 +22,38 @@ function WeatherCard({ city }: { city: string }) {
   return (
     <div>
       {weatherData && (
-        <div className="">
-          <h2 className="font-bold">{weatherData.location.name}</h2>
+        <div className="flex w-fit flex-col gap-1 rounded-md border border-gray-600 p-4">
+          <h2 className="text-2xl font-bold">{weatherData.location.name}</h2>
           <p>{weatherData.location.country}</p>
+          <div className="flex items-center">
           <img
             src={`https:${weatherData.current.condition.icon}`}
             alt={weatherData.current.condition.text}
           />
-          <p>{Math.round(weatherData.current.temp_c)}°C</p>
-          <p>{weatherData.current.condition.text}</p>
+            <p className="text-5xl font-bold">
+              {Math.round(weatherData.current.temp_c)}°C
+            </p>
+            {/* <p>{weatherData.current.condition.text}</p> */}
+          </div>
+
+          <div className="flex gap-3">
           <div>
-            <p className="">Humidity</p>
+              <p className="text-xs">Humidity</p>
             <p className="font-semibold">{weatherData.current.humidity}%</p>
           </div>
           <div>
-            <p className="">Wind Speed</p>
-            <p className="font-semibold">{weatherData.current.wind_kph} km/h</p>
+              <p className="text-xs">Wind Speed</p>
+              <p className="font-semibold">
+                {weatherData.current.wind_kph} km/h
+              </p>
+            </div>
           </div>
+          <hr className="my-2 text-gray-600" />
+          {/* <div className="mt-4 text-xs">Five day forecast</div> */}
           <div className="flex">
             {weatherData.forecast.forecastday.map((day) => (
-              <div key={day.date} className="">
-                <p className="">
+              <div key={day.date} className="flex flex-col items-center">
+                <p className="text-xs">
                   {new Date(day.date).toLocaleDateString("en-GB", {
                     weekday: "short",
                   })}
@@ -50,13 +61,13 @@ function WeatherCard({ city }: { city: string }) {
                 <img
                   src={`https:${day.day.condition.icon}`}
                   alt={day.day.condition.text}
-                  className=""
+                  className="mx-auto h-8 w-8"
                 />
-                <p className="">{Math.round(day.day.avgtemp_c)}°C</p>
+                <p className="text-xs">{Math.round(day.day.avgtemp_c)}°C</p>
               </div>
             ))}
           </div>
-          <pre>{JSON.stringify(weatherData, null, 2)}</pre>
+          {/* <pre>{JSON.stringify(weatherData, null, 2)}</pre> */}
         </div>
       )}
     </div>
