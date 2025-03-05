@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { WeatherData } from "../types/weather";
 
 export function useWeatherData(city: string) {
-  const [weatherData, setWeatherData] = useState<any | null>(null);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -18,7 +19,7 @@ export function useWeatherData(city: string) {
 
         setWeatherData(await response.json());
 
-        console.log("weatherData :", weatherData);
+        // console.log("weatherData :", weatherData);
       } catch (error) {
         setError(error as Error);
       } finally {
