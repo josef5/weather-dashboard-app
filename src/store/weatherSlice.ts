@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { City, WeatherData } from "../types/weather";
 
 interface WeatherState {
@@ -16,6 +16,21 @@ const initialState: WeatherState = {
   loading: false,
   error: null,
 };
+
+export const fetchWeatherData = createAsyncThunk(
+  "weather/fetchWeatherData",
+  async (city: string) => {
+    const response = await fetch(
+      `https://api.weatherapi.com/v1/forecast.json?key=${
+        import.meta.env.VITE_WEATHER_API_KEY
+      }&q=${city}&days=5&aqi=no&alerts=no`,
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch weather data");
+    }
+    return response.json();
+  },
+);
 
 const weatherSlice = createSlice({
   name: "weather",
@@ -39,12 +54,28 @@ const weatherSlice = createSlice({
     },
     togglePinned: (state, action: PayloadAction<string>) => {
       const city = state.cities.find((city) => city.name === action.payload);
+
       if (city) {
         city.pinned = !city.pinned;
 
         setStoredCities(state.cities);
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchWeatherData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchWeatherData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.weatherData[action.meta.arg] = action.payload;
+      })
+      .addCase(fetchWeatherData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch weather data";
+      });
   },
 });
 
