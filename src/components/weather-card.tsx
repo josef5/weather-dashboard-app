@@ -1,9 +1,9 @@
-import { X } from "lucide-react";
+import { Pin, X } from "lucide-react";
 import { useWeatherData } from "../hooks/useWeatherData";
 import { useDispatch } from "react-redux";
-import { removeCity } from "../store/weatherSlice";
+import { removeCity, togglePinned } from "../store/weatherSlice";
 
-function WeatherCard({ city }: { city: string }) {
+function WeatherCard({ city, pinned }: { city: string; pinned: boolean }) {
   const dispatch = useDispatch();
   const { weatherData, loading, error } = useWeatherData(city);
 
@@ -31,12 +31,20 @@ function WeatherCard({ city }: { city: string }) {
             </p>
             {/* <p>{weatherData.current.condition.text}</p> */}
           </div>
-          <button
-            onClick={() => dispatch(removeCity(city))}
-            className="absolute top-2 right-2 cursor-pointer hover:text-gray-500"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          <div className="absolute top-2 right-2 flex gap-0.5">
+            <button
+              onClick={() => dispatch(togglePinned(city))}
+              className={`cursor-pointer hover:text-gray-600 ${pinned ? "text-blue-500" : "text-gray-500"}`}
+            >
+              <Pin className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => dispatch(removeCity(city))}
+              className="cursor-pointer text-gray-500 hover:text-gray-600"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
 
           <div className="flex gap-3">
             <div>

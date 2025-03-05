@@ -9,7 +9,7 @@ interface WeatherState {
 }
 
 const initialState: WeatherState = {
-  cities: [],
+  cities: [{ name: "London", id: "london", pinned: false }],
   weatherData: {},
   loading: false,
   error: null,
@@ -20,16 +20,25 @@ const weatherSlice = createSlice({
   initialState,
   reducers: {
     addCity: (state, action: PayloadAction<City>) => {
+      // Check if the city is already in the list
       if (!state.cities.find((city) => city.name === action.payload.name)) {
         state.cities.push(action.payload);
       }
     },
     removeCity: (state, action: PayloadAction<string>) => {
-      state.cities = state.cities.filter((city) => city.id !== action.payload);
+      state.cities = state.cities.filter(
+        (city) => city.name !== action.payload,
+      );
       delete state.weatherData[action.payload];
+    },
+    togglePinned: (state, action: PayloadAction<string>) => {
+      const city = state.cities.find((city) => city.name === action.payload);
+      if (city) {
+        city.pinned = !city.pinned;
+      }
     },
   },
 });
 
-export const { addCity, removeCity } = weatherSlice.actions;
+export const { addCity, removeCity, togglePinned } = weatherSlice.actions;
 export default weatherSlice.reducer;

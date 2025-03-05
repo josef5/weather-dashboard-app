@@ -14,6 +14,7 @@ function SearchBar() {
         addCity({
           id: search.toLowerCase(),
           name: search.trim(),
+          pinned: false,
         }),
       );
 
@@ -28,7 +29,7 @@ function SearchBar() {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         placeholder="Add a city"
-        className="rounded-md border border-gray-600 p-2"
+        className="w-full rounded-md border border-gray-600 p-2"
       />
     </form>
   );
