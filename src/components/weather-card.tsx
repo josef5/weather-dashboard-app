@@ -1,6 +1,10 @@
+import { X } from "lucide-react";
 import { useWeatherData } from "../hooks/useWeatherData";
+import { useDispatch } from "react-redux";
+import { removeCity } from "../store/weatherSlice";
 
 function WeatherCard({ city }: { city: string }) {
+  const dispatch = useDispatch();
   const { weatherData, loading, error } = useWeatherData(city);
 
   if (loading) {
@@ -14,7 +18,7 @@ function WeatherCard({ city }: { city: string }) {
   return (
     <div>
       {weatherData && (
-        <div className="flex w-fit flex-col gap-1 rounded-md border border-gray-600 p-4">
+        <div className="relative flex w-fit flex-col gap-1 rounded-md border border-gray-600 p-4">
           <h2 className="text-2xl font-bold">{weatherData.location.name}</h2>
           <p>{weatherData.location.country}</p>
           <div className="flex items-center">
@@ -27,6 +31,12 @@ function WeatherCard({ city }: { city: string }) {
             </p>
             {/* <p>{weatherData.current.condition.text}</p> */}
           </div>
+          <button
+            onClick={() => dispatch(removeCity(city))}
+            className="absolute top-2 right-2 cursor-pointer hover:text-gray-500"
+          >
+            <X className="h-5 w-5" />
+          </button>
 
           <div className="flex gap-3">
             <div>
