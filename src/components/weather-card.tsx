@@ -62,7 +62,7 @@ function WeatherCard({ city, pinned }: { city: string; pinned: boolean }) {
           {/* <div className="mt-4 text-xs">Five day forecast</div> */}
           <div className="flex">
             {weatherData.forecast.forecastday.map((day) => (
-              <div key={day.date} className="flex flex-col items-center">
+              <div key={day.date} className="flex flex-1 flex-col items-center">
                 <p className="text-xs">
                   {new Date(day.date).toLocaleDateString("en-GB", {
                     weekday: "short",
