@@ -12,7 +12,7 @@ function WeatherCard({ city, pinned }: { city: string; pinned: boolean }) {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>Error: {error}</div>;
   }
 
   return (

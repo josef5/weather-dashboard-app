@@ -1,34 +1,21 @@
-import { useEffect, useState } from "react";
-import { WeatherData } from "../types/weather";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
+import { fetchWeatherData } from "../store/weatherSlice";
 
-export function useWeatherData(city: string) {
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+export function useWeatherData(cityName: string) {
+  const dispatch = useDispatch<AppDispatch>();
+  const weatherData = useSelector(
+    (state: RootState) => state.weather.weatherData[cityName],
+  );
+  const loading = useSelector((state: RootState) => state.weather.loading);
+  const error = useSelector((state: RootState) => state.weather.error);
 
   useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-
-      try {
-        const response = await fetch(
-          `https://api.weatherapi.com/v1/forecast.json?key=${
-            import.meta.env.VITE_WEATHER_API_KEY
-          }&q=${city}&days=5&aqi=no&alerts=no`,
-        );
-
-        setWeatherData(await response.json());
-
-        // console.log("weatherData :", weatherData);
-      } catch (error) {
-        setError(error as Error);
-      } finally {
-        setLoading(false);
-      }
+    if (!weatherData && cityName) {
+      dispatch(fetchWeatherData(cityName));
     }
-
-    fetchData();
-  }, [city]);
+  }, [cityName, dispatch, weatherData]);
 
   return { weatherData, loading, error };
 }
